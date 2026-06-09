@@ -100,24 +100,13 @@
     .slider-row { display: flex; align-items: center; gap: 10px; }
     .slider-val { font-size: 11px; color: var(--or); min-width: 36px; text-align: right; }
 
-    .btn-generer {
-      width: 100%;
-      background: linear-gradient(135deg, #C9A84C 0%, #e8c96a 45%, #C9A84C 100%);
-      background-size: 200% 200%;
-      animation: goldShift 3s ease infinite;
-      color: var(--bleu2); font-family: 'Cinzel', serif;
-      font-weight: 700; font-size: 15px; letter-spacing: 0.12em;
-      padding: 16px; border: none; cursor: pointer;
-      transition: transform 0.2s, filter 0.2s;
-    }
-    .btn-generer:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
     .btn-download {
       width: 100%; background: transparent;
       border: 1px solid rgba(201,168,76,0.3); color: var(--or);
       font-family: 'DM Sans', sans-serif; font-weight: 600;
       font-size: 13px; padding: 13px; cursor: pointer;
-      transition: all 0.2s; display: none; letter-spacing: 0.05em;
+      transition: all 0.2s; display: block; letter-spacing: 0.05em;
     }
     .btn-download.visible { display: block; }
     .btn-download:hover { background: rgba(201,168,76,0.1); border-color: var(--or); }
@@ -145,6 +134,7 @@
       .preview-panel { order: -1; }
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -190,8 +180,7 @@
         </div>
       </div>
 
-      <button class="btn-generer" onclick="generateVisuel()">✦ GÉNÉRER MON VISUEL</button>
-      <button class="btn-download" id="btnDownload" onclick="downloadVisuel()">⬇ Télécharger en haute qualité</button>
+      <button class="btn-download" id="btnDownload" onclick="downloadVisuel()">⬇ TÉLÉCHARGER MON VISUEL</button>
     </div>
 
     <div class="preview-panel">
@@ -217,6 +206,7 @@
     const W = 900, H = 900;
     let userPhoto = null;
     let zoomVal = 1.3, posYVal = 0;
+    let qrCanvas = null;
 
     // Upload
     document.getElementById('photoInput').addEventListener('change', function(e) {
@@ -305,6 +295,9 @@
       // Infos bas de page
       drawInfos();
 
+      // QR Code
+      drawQRCode();
+
       // Watermark léger
       ctx.save();
       ctx.globalAlpha = 0.12;
@@ -314,7 +307,7 @@
       ctx.fillText('foruminnov.ca', W - 28, H - 18);
       ctx.restore();
 
-      document.getElementById('btnDownload').classList.add('visible');
+      
     }
 
     function drawStardust() {
@@ -634,7 +627,45 @@
       ctx.restore();
     }
 
-    function downloadVisuel() {
+    function drawQRCode() {
+      if (!qrCanvas) return;
+      ctx.save();
+
+      const qx = W - 178, qy = H - 188;
+      const qSize = 140, pad = 10;
+
+      // Fond blanc
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(qx - pad, qy - pad, qSize + pad*2, qSize + pad*2);
+
+      // Bordure or
+      ctx.strokeStyle = 'rgba(201,168,76,0.8)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(qx - pad, qy - pad, qSize + pad*2, qSize + pad*2);
+
+      // Coins décoratifs
+      const cs = 10;
+      ctx.strokeStyle = '#C9A84C';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.moveTo(qx-pad, qy-pad+cs); ctx.lineTo(qx-pad, qy-pad); ctx.lineTo(qx-pad+cs, qy-pad); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(qx+qSize+pad-cs, qy-pad); ctx.lineTo(qx+qSize+pad, qy-pad); ctx.lineTo(qx+qSize+pad, qy-pad+cs); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(qx-pad, qy+qSize+pad-cs); ctx.lineTo(qx-pad, qy+qSize+pad); ctx.lineTo(qx-pad+cs, qy+qSize+pad); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(qx+qSize+pad-cs, qy+qSize+pad); ctx.lineTo(qx+qSize+pad, qy+qSize+pad); ctx.lineTo(qx+qSize+pad, qy+qSize+pad-cs); ctx.stroke();
+
+      // Dessiner le QR
+      try { ctx.drawImage(qrCanvas, qx, qy, qSize, qSize); } catch(e) { console.warn('QR draw error:', e); }
+
+      // Label
+      ctx.fillStyle = 'rgba(201,168,76,0.85)';
+      ctx.font = 'bold 9px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText('INSCRIS-TOI', qx + qSize/2, qy + qSize + pad + 4);
+
+      ctx.restore();
+    }
+
+        function downloadVisuel() {
       generateVisuel();
       setTimeout(() => {
         const prenom = document.getElementById('prenomInput').value.trim();
@@ -650,6 +681,23 @@
 
     // Génération initiale
     generateVisuel();
+
+    // ===== QR CODE =====
+    window.addEventListener('load', function() {
+      const qrDiv = document.createElement('div');
+      qrDiv.style.cssText = 'position:absolute;left:-9999px;top:-9999px;';
+      document.body.appendChild(qrDiv);
+      new QRCode(qrDiv, {
+        text: 'https://forum-innov-action.vercel.app/',
+        width: 140, height: 140,
+        colorDark: '#1B3A6B', colorLight: '#FFFFFF',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+      setTimeout(function() {
+        qrCanvas = qrDiv.querySelector('canvas') || qrDiv.querySelector('img');
+        generateVisuel();
+      }, 500);
+    });
   </script>
 </body>
 </html>
