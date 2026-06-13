@@ -257,18 +257,14 @@
     function generateVisuel() {
       ctx.clearRect(0, 0, W, H);
 
-      // FOND — dégradé profond
-      const bg = ctx.createRadialGradient(W/2, H*0.4, 80, W/2, H/2, W*0.85);
-      bg.addColorStop(0, '#032A92');
-      bg.addColorStop(0.5, '#04154B');
-      bg.addColorStop(1, '#04154B');
-      ctx.fillStyle = bg;
+      // FOND — bleu royal uniforme et lumineux (sans vignettage)
+      ctx.fillStyle = '#0A2FA8';
       ctx.fillRect(0, 0, W, H);
 
-      // Texture subtile — vignette coins
-      const vig = ctx.createRadialGradient(W/2, H/2, W*0.3, W/2, H/2, W*0.85);
+      // Vignettage très léger sur les bords uniquement
+      const vig = ctx.createRadialGradient(W/2, H/2, W*0.45, W/2, H/2, W*0.85);
       vig.addColorStop(0, 'rgba(0,0,0,0)');
-      vig.addColorStop(1, 'rgba(0,0,0,0.55)');
+      vig.addColorStop(1, 'rgba(0,0,0,0.22)');
       ctx.fillStyle = vig;
       ctx.fillRect(0, 0, W, H);
 
@@ -298,14 +294,7 @@
       // QR Code
       drawQRCode();
 
-      // Watermark léger
-      ctx.save();
-      ctx.globalAlpha = 0.12;
-      ctx.fillStyle = '#C9A84C';
-      ctx.font = '600 11px Arial';
-      ctx.textAlign = 'right';
-      ctx.fillText('foruminnov.ca', W - 28, H - 18);
-      ctx.restore();
+      
 
       
     }
@@ -369,10 +358,7 @@
       if (!userPhoto) {
         ctx.save();
         ctx.beginPath(); ctx.arc(cx, cy, r - 5, 0, Math.PI * 2);
-        const pfill = ctx.createRadialGradient(cx, cy - 60, 40, cx, cy, r);
-        pfill.addColorStop(0, '#032A92');
-        pfill.addColorStop(1, '#04154B');
-        ctx.fillStyle = pfill; ctx.fill();
+        ctx.fillStyle = '#0A2FA8'; ctx.fill();
         ctx.restore();
         ctx.fillStyle = 'rgba(201,168,76,0.2)';
         ctx.font = '90px Arial';
@@ -390,14 +376,7 @@
         ctx.drawImage(userPhoto, cx - dw/2, cy - dh/2 + posYVal, dw, dh);
         ctx.restore();
 
-        // Légère vignette interne
-        const iv = ctx.createRadialGradient(cx, cy, r * 0.5, cx, cy, r);
-        iv.addColorStop(0, 'rgba(0,0,0,0)');
-        iv.addColorStop(1, 'rgba(0,0,0,0.3)');
-        ctx.save();
-        ctx.beginPath(); ctx.arc(cx, cy, r - 5, 0, Math.PI * 2); ctx.clip();
-        ctx.fillStyle = iv; ctx.fill();
-        ctx.restore();
+        // Pas de vignette interne
       }
 
       // Bordure cercle — triple anneau
@@ -432,7 +411,7 @@
 
     function drawForumBadge() {
       ctx.save();
-      const bx = 44, by = 34, bw = 330, bh = 72;
+      const bx = 36, by = 28, bw = 390, bh = 88;
 
       // Fond badge
       ctx.fillStyle = 'rgba(4,21,75,0.92)';
@@ -443,7 +422,7 @@
       leftBar.addColorStop(0, '#e8c96a');
       leftBar.addColorStop(1, '#C9A84C');
       ctx.fillStyle = leftBar;
-      ctx.fillRect(bx, by, 5, bh);
+      ctx.fillRect(bx, by, 6, bh);
 
       // Bordure fine bas
       ctx.fillStyle = 'rgba(201,168,76,0.65)';
@@ -453,18 +432,18 @@
 
       // Eyebrow
       ctx.fillStyle = 'rgba(201,168,76,0.9)';
-      ctx.font = '600 9px Arial';
-      ctx.fillText('2E ÉDITION  ·  UNIVERSITÉ LAVAL  ·  QUÉBEC CITY', bx + 16, by + 20);
+      ctx.font = '600 11px Arial';
+      ctx.fillText('2E ÉDITION  ·  UNIVERSITÉ LAVAL  ·  QUÉBEC CITY', bx + 18, by + 24);
 
       // Nom événement
       ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 20px Arial';
-      ctx.fillText("Forum Innov'Action", bx + 16, by + 44);
+      ctx.font = 'bold 26px Arial';
+      ctx.fillText("Forum Innov'Action", bx + 18, by + 56);
 
       // Année or
       ctx.fillStyle = '#C9A84C';
-      ctx.font = 'bold 14px Arial';
-      ctx.fillText('2026', bx + 16, by + 62);
+      ctx.font = 'bold 17px Arial';
+      ctx.fillText('2026', bx + 18, by + 78);
 
       ctx.restore();
     }
