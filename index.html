@@ -274,12 +274,12 @@
       // Lignes décoratives fines
       drawDecoLines();
 
-      // Photo dans cercle
+      // Badge Forum haut gauche (AVANT le cercle pour passer dessous)
+      drawForumBadge();
+
+      // Photo dans cercle (par-dessus le badge)
       const cx = W/2, cy = 370, r = 258;
       drawPhotoCircle(cx, cy, r);
-
-      // Badge Forum haut gauche
-      drawForumBadge();
 
       // Nom / prénom — style chic
       const prenom = document.getElementById('prenomInput').value.trim();
@@ -411,10 +411,10 @@
 
     function drawForumBadge() {
       ctx.save();
-      const bx = 36, by = 28, bw = 390, bh = 88;
+      const bx = 28, by = 22, bw = 440, bh = 108;
 
       // Fond badge
-      ctx.fillStyle = 'rgba(4,21,75,0.92)';
+      ctx.fillStyle = 'rgba(4,21,75,0.93)';
       ctx.fillRect(bx, by, bw, bh);
 
       // Bordure or gauche épaisse
@@ -422,7 +422,7 @@
       leftBar.addColorStop(0, '#e8c96a');
       leftBar.addColorStop(1, '#C9A84C');
       ctx.fillStyle = leftBar;
-      ctx.fillRect(bx, by, 6, bh);
+      ctx.fillRect(bx, by, 7, bh);
 
       // Bordure fine bas
       ctx.fillStyle = 'rgba(201,168,76,0.65)';
@@ -432,18 +432,18 @@
 
       // Eyebrow
       ctx.fillStyle = 'rgba(201,168,76,0.9)';
-      ctx.font = '600 11px Arial';
-      ctx.fillText('2E ÉDITION  ·  UNIVERSITÉ LAVAL  ·  QUÉBEC CITY', bx + 18, by + 24);
+      ctx.font = '600 13px Arial';
+      ctx.fillText('2E ÉDITION  ·  UNIVERSITÉ LAVAL  ·  QUÉBEC CITY', bx + 22, by + 28);
 
       // Nom événement
       ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 26px Arial';
-      ctx.fillText("Forum Innov'Action", bx + 18, by + 56);
+      ctx.font = 'bold 32px Arial';
+      ctx.fillText("Forum Innov'Action", bx + 22, by + 68);
 
       // Année or
       ctx.fillStyle = '#C9A84C';
-      ctx.font = 'bold 17px Arial';
-      ctx.fillText('2026', bx + 18, by + 78);
+      ctx.font = 'bold 20px Arial';
+      ctx.fillText('2026', bx + 22, by + 94);
 
       ctx.restore();
     }
