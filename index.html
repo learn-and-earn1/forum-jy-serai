@@ -432,18 +432,18 @@
 
       // Eyebrow
       ctx.fillStyle = 'rgba(201,168,76,0.9)';
-      ctx.font = '600 13px Arial';
-      ctx.fillText('2E ÉDITION  ·  UNIVERSITÉ LAVAL  ·  QUÉBEC CITY', bx + 22, by + 28);
+      ctx.font = '600 14px Arial';
+      ctx.fillText('2E ÉDITION  ·  UNIVERSITÉ LAVAL  ·  QUÉBEC CITY', bx + 22, by + 27);
 
-      // Nom événement
+      // Nom événement — 36px, légèrement remonté pour mieux centrer dans le badge
       ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 32px Arial';
-      ctx.fillText("Forum Innov'Action", bx + 22, by + 68);
+      ctx.font = 'bold 36px Arial';
+      ctx.fillText("Forum Innov'Action", bx + 22, by + 62);
 
-      // Année or
+      // Année or — bien dans les limites du badge
       ctx.fillStyle = '#C9A84C';
-      ctx.font = 'bold 20px Arial';
-      ctx.fillText('2026', bx + 22, by + 94);
+      ctx.font = 'bold 22px Arial';
+      ctx.fillText('2026', bx + 22, by + 96);
 
       ctx.restore();
     }
@@ -584,24 +584,27 @@
       ctx.save();
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
 
-      const startY = H - 80;
+      // Répartition équilibrée : lieu / date / hashtags
+      // Lieu → 806, Date → 848 (milieu exact), Hashtags → 890
+      const startY = H - 94;
+      const step = 42;
 
-      // Infos événement — typographie raffinée
+      // Infos événement — grande typographie visible au premier regard
       const infos = [
         '📍 Université Laval · Québec City',
         '📅 Samedi 24 octobre 2026  ·  ⏰ 10h00 à 17h30',
       ];
 
       infos.forEach((txt, i) => {
-        ctx.fillStyle = i === 0 ? '#C9A84C' : 'rgba(255,255,255,0.85)';
-        ctx.font = i === 0 ? '700 15px Arial' : '500 13px Arial';
-        ctx.fillText(txt, W/2, startY + i * 22);
+        ctx.fillStyle = i === 0 ? '#C9A84C' : 'rgba(255,255,255,0.95)';
+        ctx.font = i === 0 ? '700 26px Arial' : '600 20px Arial';
+        ctx.fillText(txt, W/2, startY + i * step);
       });
 
-      // Hashtags
-      ctx.fillStyle = 'rgba(201,168,76,0.65)';
-      ctx.font = '400 10px Arial';
-      ctx.fillText('#ForumInnovAction  ·  #EntrepreneurHybride  ·  #IA', W/2, H - 14);
+      // Hashtags — bien visibles
+      ctx.fillStyle = 'rgba(201,168,76,0.8)';
+      ctx.font = '700 18px Arial';
+      ctx.fillText('#ForumInnovAction  ·  #EntrepreneurHybride  ·  #IA', W/2, H - 10);
 
       ctx.restore();
     }
@@ -634,12 +637,15 @@
       // Dessiner le QR
       try { ctx.drawImage(qrCanvas, qx, qy, qSize, qSize); } catch(e) { console.warn('QR draw error:', e); }
 
-      // Label
-      ctx.fillStyle = 'rgba(201,168,76,0.85)';
-      ctx.font = 'bold 9px Arial';
+      // Label INSCRIS-TOI
+      ctx.shadowColor = 'rgba(201,168,76,0.6)';
+      ctx.shadowBlur = 8;
+      ctx.fillStyle = '#C9A84C';
+      ctx.font = 'bold 17px Arial';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
-      ctx.fillText('INSCRIS-TOI', qx + qSize/2, qy + qSize + pad + 4);
+      ctx.fillText('INSCRIS-TOI', qx + qSize/2, qy + qSize + pad + 5);
+      ctx.shadowBlur = 0;
 
       ctx.restore();
     }
